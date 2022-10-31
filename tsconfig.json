@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"declaration": true,
+		"module": "commonjs",
+		"noImplicitAny": true,
+		"target": "es2017",
+		"skipLibCheck": true,
+		"lib": ["es2019"],
+		"esModuleInterop": true,
+		"rootDir": "src",
+		"outDir": "dist"
+	},
+	"include": ["./src/**/*.ts"],
+	"exclude": ["./dist", "./node_modules"]
+}
