@@ -1,6 +1,6 @@
 import { FieldBase, FieldParser, NotionProp } from '..'
 
-export type SelectField<K extends NotionProp['type'] = 'select'> =
+export type CreatedTimeField<K extends NotionProp['type'] = 'created_time'> =
 	FieldBase<K> & {
 		additional: {}
 		definitionSchema: {
@@ -8,8 +8,8 @@ export type SelectField<K extends NotionProp['type'] = 'select'> =
 		}
 	}
 
-export const selectFieldParser: FieldParser<SelectField> = {
-	notionKey: 'select',
+export const createdTimeFieldParser: FieldParser<CreatedTimeField> = {
+	notionKey: 'created_time',
 	parse(value) {
 		if (!value) return undefined
 		return {

@@ -3,29 +3,32 @@ import { QueryDatabaseParameters } from '@notionhq/client/build/src/api-endpoint
 import type { GetResourceType, Schema } from '..'
 import { parseNotionPage } from '../fields/parser'
 
-export type GetAllOptions = {
-	queryProps?: Omit<QueryDatabaseParameters, 'database_id'>
-}
+export type GetOneByOptions = Omit<
+	QueryDatabaseParameters,
+	'database_id' | 'page_size' | 'start_cursor'
+>
 
-export const createGetAll = <S extends Schema, R extends keyof S>(
+export const createGetOneBy = <S extends Schema, R extends keyof S>(
 	client: Client,
 	schema: S,
-	resourceName: R & string
+	resourceName: R
 ) => {
-	return async (options: GetAllOptions): Promise<GetResourceType<S, R>[]> => {
+	return async (
+		options: GetOneByOptions
+	): Promise<GetResourceType<S, R> | undefined> => {
 		const databaseId = schema[resourceName]?.databaseId
 		if (!databaseId)
 			throw `Database ID is required for resource ${String(resourceName)}`
 
 		const response = await client.databases.query({
 			database_id: databaseId,
-			...options.queryProps,
+			...options,
+			page_size: 1,
 		})
-		const pages = response.results.filter(isFullPage)
-		const parsedPages = pages.map((page) =>
-			parseNotionPage(schema, resourceName, page)
-		)
+		const page = response.results[0]
+		if (!isFullPage(page)) return undefined
+		const parsedPage = parseNotionPage(schema, String(resourceName), page)
 
-		return parsedPages
+		return parsedPage
 	}
 }

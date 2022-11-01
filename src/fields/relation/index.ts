@@ -1,14 +1,14 @@
 import { FieldBase, FieldParser, NotionProp } from '..'
 
-export type DateField<K extends NotionProp['type'] = 'date'> = FieldBase<K> & {
+export type RelationField<K extends NotionProp['type'] = 'relation'> = FieldBase<K> & {
 	additional: {}
 	definitionSchema: {
 		type: K
 	}
 }
 
-export const dateFieldParser: FieldParser<DateField> = {
-	notionKey: 'date',
+export const relationFieldParser: FieldParser<RelationField> = {
+	notionKey: 'relation',
 	parse(value) {
 		if (!value) return undefined
 		return {
@@ -16,3 +16,4 @@ export const dateFieldParser: FieldParser<DateField> = {
 		}
 	},
 }
+

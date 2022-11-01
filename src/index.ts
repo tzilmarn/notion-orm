@@ -1,51 +1,40 @@
 import { Client as NotionClient } from '@notionhq/client'
-import {
-	PageObjectResponse,
-	PartialUserObjectResponse,
-} from '@notionhq/client/build/src/api-endpoints'
+import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints'
 import { ClientOptions } from '@notionhq/client/build/src/Client'
 import mapValues from 'lodash/mapValues'
-import { Field } from './fields'
-import { createGetAll } from './methods/get-all'
-import { ParsedImage } from './util/parse-image'
+import { Field, FieldParser } from './fields'
+import { createGetOne } from './methods/get-one'
+import { createGetOneBy } from './methods/get-one-by'
+import { createGetMany } from './methods/get-many'
 
 export type Schema = {
 	[resourceName: string]: {
 		databaseId: string
 		fields: {
-			[field: Exclude<string, 'id' | 'cover' | 'icon'>]: Field['Schema']
+			[
+				field: Exclude<string, 'id' | 'cover' | 'icon'>
+			]: Field['definitionSchema']
 		}
 	}
 }
 
 export type Client<S extends Schema> = {
 	[R in keyof S & string]: {
-		getAll: ReturnType<typeof createGetAll>
+		getOne: ReturnType<typeof createGetOne<S, R>>
+		getOneBy: ReturnType<typeof createGetOneBy<S, R>>
+		getMany: ReturnType<typeof createGetMany<S, R>>
 	}
 }
 
-export type BaseResourceProps = {
-	_id: string
-	_parent: {
-		type: 'database_id'
-		database_id: string
+export type GetResourceType<S extends Schema, R extends keyof S> = Omit<
+	PageObjectResponse,
+	'properties'
+> & {
+	properties: {
+		[K in keyof S[R]['fields']]: ReturnType<
+			FieldParser<Extract<Field, { notionKey: K }>>['parse']
+		>
 	}
-	_object: 'page'
-	_cover: ParsedImage | undefined
-	_icon: PageObjectResponse['icon']
-	_archived: boolean
-	_createdBy: PartialUserObjectResponse
-	_createdTime: string
-	_lastEditedBy: PartialUserObjectResponse
-	_lastEditedTime: string
-	_url: string
-}
-
-export type GetResourceType<S extends Schema, R extends keyof S> = {
-	[FS in keyof S[R]['fields']]: Partial<
-		Extract<Field, { Schema: FS }>['Output']['value']
-	> &
-		BaseResourceProps
 }
 
 export const createClient = <S extends Schema>(
@@ -57,7 +46,9 @@ export const createClient = <S extends Schema>(
 	})
 
 	const client = mapValues(schema, (_, resourceName) => ({
-		getAll: createGetAll(notionClient, schema, resourceName),
+		getOne: createGetOne(notionClient, schema, resourceName),
+		getOneBy: createGetOneBy(notionClient, schema, resourceName),
+		getMany: createGetMany(notionClient, schema, resourceName),
 	}))
-	return client as any
+	return client
 }
