@@ -1,19 +1,8 @@
-import { FieldBase, FieldParser, NotionProp } from '..'
+import { FieldType, NotionProp } from '../types'
 
-export type EmailField<K extends NotionProp['type'] = 'email'> =
-	FieldBase<K> & {
-		additional: {}
-		definitionSchema: {
-			type: K
-		}
-	}
+export interface EmailField<T extends NotionProp['type'] = 'email'>
+	extends FieldType<T> {}
 
-export const emailFieldParser: FieldParser<EmailField> = {
-	notionKey: 'email',
-	parse(value) {
-		if (!value) return undefined
-		return {
-			...value,
-		}
-	},
+export const emailParser: EmailField['parser'] = (_, value) => {
+	return value
 }

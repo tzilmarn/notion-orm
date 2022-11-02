@@ -1,19 +1,8 @@
-import { FieldBase, FieldParser, NotionProp } from '..'
+import { FieldType, NotionProp } from '../types'
 
-export type StatusField<K extends NotionProp['type'] = 'status'> =
-	FieldBase<K> & {
-		additional: {}
-		definitionSchema: {
-			type: K
-		}
-	}
+export interface StatusField<T extends NotionProp['type'] = 'status'>
+	extends FieldType<T> {}
 
-export const statusFieldParser: FieldParser<StatusField> = {
-	notionKey: 'status',
-	parse(value) {
-		if (!value) return undefined
-		return {
-			...value,
-		}
-	},
+export const statusParser: StatusField['parser'] = (_, value) => {
+	return value
 }

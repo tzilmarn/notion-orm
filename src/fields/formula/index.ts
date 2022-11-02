@@ -1,20 +1,8 @@
-import { FieldBase, FieldParser, NotionProp } from '..'
+import { FieldType, NotionProp } from '../types'
 
-export type FormulaField<K extends NotionProp['type'] = 'formula'> =
-	FieldBase<K> & {
-		additional: {}
-		definitionSchema: {
-			type: K
-			formulaType?: 'string' | 'number' | 'boolean' | 'date'
-		}
-	}
+export interface FormulaField<T extends NotionProp['type'] = 'formula'>
+	extends FieldType<T> {}
 
-export const formulaFieldParser: FieldParser<FormulaField> = {
-	notionKey: 'formula',
-	parse(value) {
-		if (!value) return undefined
-		return {
-			...value,
-		}
-	},
+export const formulaParser: FormulaField['parser'] = (_, value) => {
+	return value
 }

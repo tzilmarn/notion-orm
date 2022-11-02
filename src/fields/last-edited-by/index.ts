@@ -1,19 +1,9 @@
-import { FieldBase, FieldParser, NotionProp } from '..'
+import { FieldType, NotionProp } from '../types'
 
-export type LastEditedByField<K extends NotionProp['type'] = 'last_edited_by'> =
-	FieldBase<K> & {
-		additional: {}
-		definitionSchema: {
-			type: K
-		}
-	}
+export interface LastEditedByField<
+	T extends NotionProp['type'] = 'last_edited_by'
+> extends FieldType<T> {}
 
-export const lastEditedByFieldParser: FieldParser<LastEditedByField> = {
-	notionKey: 'last_edited_by',
-	parse(value) {
-		if (!value) return undefined
-		return {
-			...value,
-		}
-	},
+export const lastEditedByParser: LastEditedByField['parser'] = (_, value) => {
+	return value
 }

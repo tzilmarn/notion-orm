@@ -1,41 +1,25 @@
-import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints'
-export type NotionProp = PageObjectResponse['properties'][string]
+import { NotionProp } from './types'
 
-export type FieldParser<F extends Field> = {
-	notionKey: F['notionKey']
-	parse(
-		value: F['notionType'] | undefined
-	): Partial<F['notionType'] & F['additional']> | undefined
-}
-
-export type FieldBase<K extends NotionProp['type']> = {
-	notionKey: K
-	notionType: Extract<NotionProp, { type: K }>
-}
-
-import { CheckboxField, checkboxFieldParser } from './checkbox'
-import { CreatedByField, createdByFieldParser } from './created-by'
-import { CreatedTimeField, createdTimeFieldParser } from './created-time'
-import { DateField, dateFieldParser } from './date'
-import { EmailField, emailFieldParser } from './email'
-import { FilesField, filesFieldParser } from './files'
-import { FormulaField, formulaFieldParser } from './formula'
-import { LastEditedByField, lastEditedByFieldParser } from './last-edited-by'
-import {
-	LastEditedTimeField,
-	lastEditedTimeFieldParser,
-} from './last-edited-time'
-import { MultiSelectField, multiSelectFieldParser } from './multi-select'
-import { NumberField, numberFieldParser } from './number'
-import { PeopleField, peopleFieldParser } from './people'
-import { PhoneNumberField, phoneNumberFieldParser } from './phone-number'
-import { RelationField, relationFieldParser } from './relation'
-import { RichTextField, richTextFieldParser } from './rich-text'
-import { RollupField, rollupFieldParser } from './rollup'
-import { SelectField, selectFieldParser } from './select'
-import { StatusField, statusFieldParser } from './status'
-import { TitleField, titleFieldParser } from './title'
-import { UrlField, urlFieldParser } from './url'
+import { CheckboxField, checkboxParser } from './checkbox'
+import { CreatedByField, createdByParser } from './created-by'
+import { CreatedTimeField, createdTimeParser } from './created-time'
+import { DateField, dateParser } from './date'
+import { EmailField, emailParser } from './email'
+import { FilesField, filesParser } from './files'
+import { FormulaField, formulaParser } from './formula'
+import { LastEditedByField, lastEditedByParser } from './last-edited-by'
+import { LastEditedTimeField, lastEditedTimeParser } from './last-edited-time'
+import { MultiSelectField, multiSelectParser } from './multi-select'
+import { NumberField, numberParser } from './number'
+import { PeopleField, peopleParser } from './people'
+import { PhoneNumberField, phoneNumberParser } from './phone-number'
+import { RelationField, relationParser } from './relation'
+import { RichTextField, richTextParser } from './rich-text'
+import { RollupField, rollupParser } from './rollup'
+import { SelectField, selectParser } from './select'
+import { StatusField, statusParser } from './status'
+import { TitleField, titleParser } from './title'
+import { UrlField, urlParser } from './url'
 
 export type Field =
 	| CheckboxField
@@ -59,25 +43,27 @@ export type Field =
 	| TitleField
 	| UrlField
 
-export const fieldParsers: Record<NotionProp['type'], FieldParser<any>> = {
-	checkbox: checkboxFieldParser,
-	created_by: createdByFieldParser,
-	created_time: createdTimeFieldParser,
-	date: dateFieldParser,
-	email: emailFieldParser,
-	files: filesFieldParser,
-	formula: formulaFieldParser,
-	last_edited_by: lastEditedByFieldParser,
-	last_edited_time: lastEditedTimeFieldParser,
-	multi_select: multiSelectFieldParser,
-	number: numberFieldParser,
-	people: peopleFieldParser,
-	phone_number: phoneNumberFieldParser,
-	relation: relationFieldParser,
-	rich_text: richTextFieldParser,
-	rollup: rollupFieldParser,
-	select: selectFieldParser,
-	status: statusFieldParser,
-	title: titleFieldParser,
-	url: urlFieldParser,
+export const fieldParsers: {
+	[K in NotionProp['type']]: Extract<Field, { notionType: K }>['parser']
+} = {
+	checkbox: checkboxParser,
+	created_by: createdByParser,
+	created_time: createdTimeParser,
+	date: dateParser,
+	email: emailParser,
+	files: filesParser,
+	formula: formulaParser,
+	last_edited_by: lastEditedByParser,
+	last_edited_time: lastEditedTimeParser,
+	multi_select: multiSelectParser,
+	number: numberParser,
+	people: peopleParser,
+	phone_number: phoneNumberParser,
+	relation: relationParser,
+	rich_text: richTextParser,
+	rollup: rollupParser,
+	select: selectParser,
+	status: statusParser,
+	title: titleParser,
+	url: urlParser,
 } as const

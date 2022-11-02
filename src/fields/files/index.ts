@@ -1,24 +1,17 @@
-import { FieldBase, FieldParser, NotionProp } from '..'
+import { FieldType, NotionProp } from '../types'
 
-export type FilesField<K extends NotionProp['type'] = 'files'> =
-	FieldBase<K> & {
-		additional: {}
-		definitionSchema: {
-			type: K
-		}
-	}
+export interface FilesField<T extends NotionProp['type'] = 'files'>
+	extends FieldType<T, {}, { urls: string[] }> {}
 
-export const filesFieldParser: FieldParser<FilesField> = {
-	notionKey: 'files',
-	parse(value) {
-		if (!value) return undefined
-		return {
-			...value,
-			urls: value.files.map((file) => {
+export const filesParser: FilesField['parser'] = (_, value) => {
+	return {
+		...value,
+		urls: value.files
+			.map((file) => {
 				if (file.type === 'file') return file.file.url
 				else if (file.type === 'external') return file.external.url
 				else return undefined
-			}),
-		}
-	},
+			})
+			.filter((url: string | undefined): url is string => !!url),
+	}
 }

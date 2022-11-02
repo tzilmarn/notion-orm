@@ -1,22 +1,11 @@
-import { FieldBase, FieldParser, NotionProp } from '..'
+import { FieldType, NotionProp } from '../types'
 
-export type RichTextField<K extends NotionProp['type'] = 'rich_text'> =
-	FieldBase<K> & {
-		additional: {
-			plainText: string
-		}
-		definitionSchema: {
-			type: K
-		}
+export interface RichTextField<T extends NotionProp['type'] = 'rich_text'>
+	extends FieldType<T, {}, { plainText: string }> {}
+
+export const richTextParser: RichTextField['parser'] = (_, value) => {
+	return {
+		...value,
+		plainText: value.rich_text.map(({ plain_text }) => plain_text).join(' '),
 	}
-
-export const richTextFieldParser: FieldParser<RichTextField> = {
-	notionKey: 'rich_text',
-	parse(value) {
-		if (!value) return undefined
-		return {
-			...value,
-			plainText: value.rich_text.map(({ plain_text }) => plain_text).join(' '),
-		}
-	},
 }

@@ -2,7 +2,7 @@ import { Client as NotionClient } from '@notionhq/client'
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints'
 import { ClientOptions } from '@notionhq/client/build/src/Client'
 import mapValues from 'lodash/mapValues'
-import { Field, FieldParser } from './fields'
+import { Field } from './fields'
 import { createGetOne } from './methods/get-one'
 import { createGetOneBy } from './methods/get-one-by'
 import { createGetMany } from './methods/get-many'
@@ -10,11 +10,7 @@ import { createGetMany } from './methods/get-many'
 export type Schema = {
 	[resourceName: string]: {
 		databaseId: string
-		fields: {
-			[
-				field: Exclude<string, 'id' | 'cover' | 'icon'>
-			]: Field['definitionSchema']
-		}
+		fields: Record<string, Field['schema']>
 	}
 }
 
@@ -31,9 +27,10 @@ export type GetResourceType<S extends Schema, R extends keyof S> = Omit<
 	'properties'
 > & {
 	properties: {
-		[K in keyof S[R]['fields']]: ReturnType<
-			FieldParser<Extract<Field, { notionKey: K }>>['parse']
-		>
+		[fieldName in keyof S[R]['fields']]: Extract<
+			Field,
+			{ notionType: S[R]['fields'][fieldName]['type'] }
+		>['returnType']
 	}
 }
 
@@ -45,10 +42,11 @@ export const createClient = <S extends Schema>(
 		...options,
 	})
 
-	const client = mapValues(schema, (_, resourceName) => ({
+	// TODO investigate why the type here is wrong
+	const client = mapValues(schema, (_, resourceName: keyof S) => ({
 		getOne: createGetOne(notionClient, schema, resourceName),
 		getOneBy: createGetOneBy(notionClient, schema, resourceName),
 		getMany: createGetMany(notionClient, schema, resourceName),
-	}))
+	})) as unknown as Client<S>
 	return client
 }

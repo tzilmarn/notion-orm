@@ -1,19 +1,8 @@
-import { FieldBase, FieldParser, NotionProp } from '..'
+import { FieldType, NotionProp } from '../types'
 
-export type NumberField<K extends NotionProp['type'] = 'number'> =
-	FieldBase<K> & {
-		additional: {}
-		definitionSchema: {
-			type: K
-		}
-	}
+export interface NumberField<T extends NotionProp['type'] = 'number'>
+	extends FieldType<T> {}
 
-export const numberFieldParser: FieldParser<NumberField> = {
-	notionKey: 'number',
-	parse(value) {
-		if (!value) return undefined
-		return {
-			...value,
-		}
-	},
+export const numberParser: NumberField['parser'] = (_, value) => {
+	return value
 }

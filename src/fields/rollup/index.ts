@@ -1,19 +1,8 @@
-import { FieldBase, FieldParser, NotionProp } from '..'
+import { FieldType, NotionProp } from '../types'
 
-export type RollupField<K extends NotionProp['type'] = 'rollup'> =
-	FieldBase<K> & {
-		additional: {}
-		definitionSchema: {
-			type: K
-		}
-	}
+export interface RollupField<T extends NotionProp['type'] = 'rollup'>
+	extends FieldType<T> {}
 
-export const rollupFieldParser: FieldParser<RollupField> = {
-	notionKey: 'rollup',
-	parse(value) {
-		if (!value) return undefined
-		return {
-			...value,
-		}
-	},
+export const rollupParser: RollupField['parser'] = (_, value) => {
+	return value
 }

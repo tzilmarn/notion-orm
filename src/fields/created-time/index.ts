@@ -1,19 +1,8 @@
-import { FieldBase, FieldParser, NotionProp } from '..'
+import { FieldType, NotionProp } from '../types'
 
-export type CreatedTimeField<K extends NotionProp['type'] = 'created_time'> =
-	FieldBase<K> & {
-		additional: {}
-		definitionSchema: {
-			type: K
-		}
-	}
+export interface CreatedTimeField<T extends NotionProp['type'] = 'created_time'>
+	extends FieldType<T> {}
 
-export const createdTimeFieldParser: FieldParser<CreatedTimeField> = {
-	notionKey: 'created_time',
-	parse(value) {
-		if (!value) return undefined
-		return {
-			...value,
-		}
-	},
+export const createdTimeParser: CreatedTimeField['parser'] = (_, value) => {
+	return value
 }

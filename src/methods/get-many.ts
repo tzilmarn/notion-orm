@@ -21,7 +21,7 @@ export const createGetMany = <S extends Schema, R extends keyof S>(
 		})
 		const pages = response.results.filter(isFullPage)
 		const parsedPages = pages.map((page) =>
-			parseNotionPage(schema, String(resourceName), page)
+			parseNotionPage(schema, resourceName, page)
 		)
 
 		return parsedPages

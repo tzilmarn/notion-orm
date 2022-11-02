@@ -1,19 +1,8 @@
-import { FieldBase, FieldParser, NotionProp } from '..'
+import { FieldType, NotionProp } from '../types'
 
-export type PeopleField<K extends NotionProp['type'] = 'people'> =
-	FieldBase<K> & {
-		additional: {}
-		definitionSchema: {
-			type: K
-		}
-	}
+export interface PeopleField<T extends NotionProp['type'] = 'people'>
+	extends FieldType<T> {}
 
-export const peopleFieldParser: FieldParser<PeopleField> = {
-	notionKey: 'people',
-	parse(value) {
-		if (!value) return undefined
-		return {
-			...value,
-		}
-	},
+export const peopleParser: PeopleField['parser'] = (_, value) => {
+	return value
 }

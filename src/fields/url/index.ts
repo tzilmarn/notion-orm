@@ -1,18 +1,8 @@
-import { FieldBase, FieldParser, NotionProp } from '..'
+import { FieldType, NotionProp } from '../types'
 
-export type UrlField<K extends NotionProp['type'] = 'url'> = FieldBase<K> & {
-	additional: {}
-	definitionSchema: {
-		type: K
-	}
-}
+export interface UrlField<T extends NotionProp['type'] = 'url'>
+	extends FieldType<T> {}
 
-export const urlFieldParser: FieldParser<UrlField> = {
-	notionKey: 'url',
-	parse(value) {
-		if (!value) return undefined
-		return {
-			...value,
-		}
-	},
+export const urlParser: UrlField['parser'] = (_, value) => {
+	return value
 }

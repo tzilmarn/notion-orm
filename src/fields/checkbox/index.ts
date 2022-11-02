@@ -1,19 +1,8 @@
-import { FieldBase, FieldParser, NotionProp } from '..'
+import { FieldType, NotionProp } from '../types'
 
-export type CheckboxField<K extends NotionProp['type'] = 'checkbox'> =
-	FieldBase<K> & {
-		additional: {}
-		definitionSchema: {
-			type: K
-		}
-	}
+export interface CheckboxField<T extends NotionProp['type'] = 'checkbox'>
+	extends FieldType<T> {}
 
-export const checkboxFieldParser: FieldParser<CheckboxField> = {
-	notionKey: 'checkbox',
-	parse(value) {
-		if (!value) return undefined
-		return {
-			...value,
-		}
-	},
+export const checkboxParser: CheckboxField['parser'] = (_, value) => {
+	return value
 }

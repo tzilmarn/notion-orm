@@ -1,19 +1,8 @@
-import { FieldBase, FieldParser, NotionProp } from '..'
+import { FieldType, NotionProp } from '../types'
 
-export type RelationField<K extends NotionProp['type'] = 'relation'> = FieldBase<K> & {
-	additional: {}
-	definitionSchema: {
-		type: K
-	}
+export interface RelationField<T extends NotionProp['type'] = 'relation'>
+	extends FieldType<T> {}
+
+export const relationParser: RelationField['parser'] = (_, value) => {
+	return value
 }
-
-export const relationFieldParser: FieldParser<RelationField> = {
-	notionKey: 'relation',
-	parse(value) {
-		if (!value) return undefined
-		return {
-			...value,
-		}
-	},
-}
-

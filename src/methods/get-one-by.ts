@@ -27,7 +27,7 @@ export const createGetOneBy = <S extends Schema, R extends keyof S>(
 		})
 		const page = response.results[0]
 		if (!isFullPage(page)) return undefined
-		const parsedPage = parseNotionPage(schema, String(resourceName), page)
+		const parsedPage = parseNotionPage(schema, resourceName, page)
 
 		return parsedPage
 	}

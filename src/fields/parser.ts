@@ -3,7 +3,7 @@ import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints'
 import _ from 'lodash'
 import { fieldParsers } from '.'
 
-export const parseNotionPage = <S extends Schema, R extends keyof S & string>(
+export const parseNotionPage = <S extends Schema, R extends keyof S>(
 	schema: S,
 	resourceName: R,
 	page: PageObjectResponse
@@ -11,10 +11,17 @@ export const parseNotionPage = <S extends Schema, R extends keyof S & string>(
 	const properties = _.chain(page.properties)
 		.entries()
 		.map(([notionFieldName, notionValue]) => {
-			return [
-				notionFieldName,
-				fieldParsers[notionValue.type].parse(notionValue),
-			]
+			const fieldSchema = schema[resourceName].fields[notionFieldName]
+			const fieldParser = fieldParsers[fieldSchema.type]
+
+			// For some reason the type here is never
+			// Cast as any as a workaround
+			let parsedValue = fieldParser(
+				fieldSchema as any,
+				notionValue as any
+			) as any
+
+			return [notionFieldName, parsedValue]
 		})
 		.fromPairs()
 		.omitBy(_.isUndefined)

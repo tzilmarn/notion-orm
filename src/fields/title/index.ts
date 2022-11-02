@@ -1,20 +1,11 @@
-import { FieldBase, FieldParser, NotionProp } from '..'
+import { FieldType, NotionProp } from '../types'
 
-export type TitleField<K extends NotionProp['type'] = 'title'> =
-	FieldBase<K> & {
-		additional: {}
-		definitionSchema: {
-			type: K
-		}
+export interface TitleField<T extends NotionProp['type'] = 'title'>
+	extends FieldType<T, {}, { plainText: string }> {}
+
+export const titleParser: TitleField['parser'] = (_, value) => {
+	return {
+		...value,
+		plainText: value.title.map(({ plain_text }) => plain_text).join(' '),
 	}
-
-export const titleFieldParser: FieldParser<TitleField> = {
-	notionKey: 'title',
-	parse(value) {
-		if (!value) return undefined
-		return {
-			...value,
-			plainText: value.title.map(({ plain_text }) => plain_text).join(' '),
-		}
-	},
 }
