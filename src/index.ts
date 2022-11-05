@@ -26,6 +26,7 @@ export type GetResourceType<S extends Schema, R extends keyof S> = Omit<
 	PageObjectResponse,
 	'properties'
 > & {
+	coverUrl: string | undefined
 	properties: {
 		[fieldName in keyof S[R]['fields']]: Extract<
 			Field,

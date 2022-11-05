@@ -27,5 +27,13 @@ export const parseNotionPage = <S extends Schema, R extends keyof S>(
 		.omitBy(_.isUndefined)
 		.value() as GetResourceType<S, R>['properties']
 
-	return { ...page, properties: { ...page.properties, ...properties } }
+	let coverUrl: string | undefined = undefined
+	if (page.cover?.type === 'external') coverUrl = page.cover.external.url
+	else if (page.cover?.type === 'file') coverUrl = page.cover.file.url
+
+	return {
+		...page,
+		coverUrl,
+		properties: { ...page.properties, ...properties },
+	}
 }
