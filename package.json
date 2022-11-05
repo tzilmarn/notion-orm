@@ -1,7 +1,7 @@
 {
 	"name": "@tzilmarn/notion-orm",
 	"description": "A strongly-typed wrapper around the notion client",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"homepage": "https://github.com/tzilmarn/notion-orm",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
