@@ -1,5 +1,5 @@
 import { Client as NotionClient } from '@notionhq/client'
-import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints'
+import { PageObjectResponse } from './api-types'
 import { ClientOptions } from '@notionhq/client/build/src/Client'
 import mapValues from 'lodash/mapValues'
 import { Field } from './fields'
@@ -47,6 +47,6 @@ export const createClient = <S extends Schema>(
 		getOne: createGetOne(notionClient, schema, resourceName),
 		getOneBy: createGetOneBy(notionClient, schema, resourceName),
 		getMany: createGetMany(notionClient, schema, resourceName),
-	})) as unknown as Client<S>
+	}))
 	return client
 }
