@@ -4,10 +4,7 @@ import type { GetResourceType, Schema } from '..'
 import { parseNotionPage } from '../fields/parser'
 import { Filters, Sorts } from '../fields/types'
 
-export type GetOneByOptions<
-	S extends Schema,
-	R extends keyof S
-> = Omit<
+export type GetOneByOptions<S extends Schema, R extends keyof S> = Omit<
 	QueryDatabaseParameters,
 	'database_id' | 'page_size' | 'start_cursor' | 'filter' | 'sorts'
 > & {
@@ -21,7 +18,7 @@ export const createGetOneBy = <S extends Schema, R extends keyof S>(
 	resourceName: R
 ) => {
 	return async (
-		options: GetOneByOptions<S, R>
+		options?: GetOneByOptions<S, R>
 	): Promise<GetResourceType<S, R> | undefined> => {
 		const databaseId = schema[resourceName]?.databaseId
 		if (!databaseId)
@@ -30,7 +27,7 @@ export const createGetOneBy = <S extends Schema, R extends keyof S>(
 		// TODO find out cause of type error
 		const response = await client.databases.query({
 			database_id: databaseId,
-			...options as any,
+			...(options as any),
 			page_size: 1,
 		})
 		const page = response.results[0]

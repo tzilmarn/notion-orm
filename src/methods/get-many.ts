@@ -18,7 +18,7 @@ export const createGetMany = <S extends Schema, R extends keyof S>(
 	resourceName: R
 ) => {
 	return async (
-		options: GetManyOptions<S, R>
+		options?: GetManyOptions<S, R>
 	): Promise<GetResourceType<S, R>[]> => {
 		const databaseId = schema[resourceName]?.databaseId
 		if (!databaseId)
@@ -27,7 +27,7 @@ export const createGetMany = <S extends Schema, R extends keyof S>(
 		// TODO find out cause of type error
 		const response = await client.databases.query({
 			database_id: databaseId,
-			...options as any,
+			...(options as any),
 		})
 		const pages = response.results.filter(isFullPage)
 		const parsedPages = pages.map((page) =>
