@@ -12,9 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - uses: actions/setup-node@v3
         with:
           node-version: 16
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 6.0.2
+
       - run: pnpm install
       - run: pnpm build
       - run: pnpm test
@@ -24,10 +30,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 6.0.2
+
       - uses: actions/setup-node@v3
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
+
       - run: pnpm install
       - run: pnpm publish
         env:
