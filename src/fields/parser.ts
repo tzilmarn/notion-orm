@@ -12,7 +12,9 @@ export const parseNotionPage = <S extends Schema, R extends keyof S>(
 		.entries()
 		.map(([notionFieldName, notionValue]) => {
 			const fieldSchema = schema[resourceName].fields[notionFieldName]
-			const fieldParser = fieldParsers[fieldSchema.type]
+			const fieldParser = fieldParsers[fieldSchema?.type]
+
+			if (!fieldParser) return [notionFieldName, undefined]
 
 			// For some reason the type here is never
 			// Cast as any as a workaround
